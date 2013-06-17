@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="bscardiotracker"
+    package="com.bscardiotracker"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -8,15 +8,32 @@
         android:minSdkVersion="8"
         android:targetSdkVersion="16" />
 
+    <permission
+            android:name="com.example.mapdemo.permission.MAPS_RECEIVE"
+            android:protectionLevel="signature"/>
+    <uses-permission android:name="com.example.mapdemo.permission.MAPS_RECEIVE"/>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <!-- Maps API needs OpenGL ES 2.0. -->
+    <uses-feature
+            android:glEsVersion="0x00020000"
+            android:required="true"/>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="bscardiotracker.Dashboard"
+            android:name="com.bscardiotracker.Dashboard"
             android:label="@string/app_name"
-            android:screenOrientation="sensorPortrait">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,12 +41,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="bscardiotracker.TrackingScreen"
+        <activity android:name="com.bscardiotracker.TrackingScreen"
                   android:label=""
-                  android:screenOrientation="sensorPortrait" />
+                  android:screenOrientation="portrait" />
 
-        <service android:name="bscardiotracker.TimerService" />
-        <service android:name="bscardiotracker.GpsService" />
+        <service android:name="com.bscardiotracker.TimerService" />
+        <service android:name="com.bscardiotracker.GpsService" />
     </application>
 
 </manifest>
