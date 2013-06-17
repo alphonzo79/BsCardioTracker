@@ -1,8 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/stats_container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/time_display"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="33"
+            android:textSize="24sp"
+            android:gravity="center_horizontal"
+            android:text="@string/temp"/>
+
+        <TextView
+            android:id="@+id/distance_display"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="33"
+            android:textSize="24sp"
+            android:gravity="center_horizontal"
+            android:text="@string/temp"/>
+
+        <TextView
+            android:id="@+id/pace_display"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="33"
+            android:textSize="24sp"
+            android:gravity="center_horizontal"
+            android:text="@string/temp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/labels_container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/stats_container"
+        android:orientation="horizontal"
+        android:layout_marginBottom="5dp">
+
+        <TextView
+                android:id="@+id/time_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:textSize="12sp"
+                android:gravity="center_horizontal"
+                android:text="@string/time"/>
+
+        <TextView
+                android:id="@+id/distance_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:textSize="12sp"
+                android:gravity="center_horizontal"
+                android:text="@string/distance"/>
+
+        <TextView
+                android:id="@+id/pace_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:textSize="12sp"
+                android:gravity="center_horizontal"
+                android:text="@string/pace"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttons_container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/start_stop_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/start"/>
+
+        <Button
+            android:id="@+id/pause_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/pause" />
+
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/labels_container"
+        android:layout_above="@id/buttons_container"
+        class="com.google.android.gms.maps.SupportMapFragment"/>
+
+</RelativeLayout>
