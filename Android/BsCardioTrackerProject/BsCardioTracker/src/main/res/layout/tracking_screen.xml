@@ -19,25 +19,59 @@
             android:layout_weight="33"
             android:textSize="24sp"
             android:gravity="center_horizontal"
-            android:text="@string/temp"/>
+            android:text="@string/clock_default"/>
 
-        <TextView
-            android:id="@+id/distance_display"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="33"
-            android:textSize="24sp"
+            android:baselineAligned="true"
             android:gravity="center_horizontal"
-            android:text="@string/temp"/>
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/pace_display"
+            <TextView
+                android:id="@+id/distance_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:gravity="center_horizontal"
+                android:text="@string/distance_default"/>
+
+            <TextView
+                android:id="@+id/distance_units"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:gravity="center_horizontal"
+                android:text="@string/miles"/>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="33"
-            android:textSize="24sp"
+            android:baselineAligned="true"
             android:gravity="center_horizontal"
-            android:text="@string/temp"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/pace_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:gravity="center_horizontal"
+                android:text="@string/clock_default"/>
+
+            <TextView
+                android:id="@+id/pace_units"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:gravity="center_horizontal"
+                android:text="@string/minutes_per_mile"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
