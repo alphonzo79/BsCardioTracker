@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -36,6 +37,7 @@ public class GpsService extends Service implements TimerService.TimerListener {
     }
 
     public void setUpGps(Context context) {
+        Log.d("CardioTracker", "Setting Up Gps");
         gpsUtility = new GpsUtility(context);
         gpsUtility.setUpLocationService();
     }
@@ -54,6 +56,7 @@ public class GpsService extends Service implements TimerService.TimerListener {
     }
 
     public LatLng getStartLocation() {
+        Log.d("CardioTracker", "Getting start location");
         return gpsUtility.getLocation();
     }
 

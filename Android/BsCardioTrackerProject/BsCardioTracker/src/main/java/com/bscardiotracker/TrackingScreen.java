@@ -6,6 +6,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -25,6 +26,8 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
     GpsService gpsService;
     boolean gpsServiceBound;
 
+    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +44,14 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
         setUpMap();
     }
 
+    @Override
+    public void onDestroy() {
+        gpsService.unbindService(gpsConnection);
+        timerService.unbindService(timerConnection);
+    }
+
     private void setUpMap() {
+        Log.d("CardioTracker", "setUpMap");
         if(map == null) {
             map = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
 
@@ -50,7 +60,14 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
             }
         }
 
+        if(map == null) {
+            Log.d("CardioTracker", "map Was Null");
+        }
+        if(!gpsServiceBound) {
+            Log.d("CardioTracker", "gpsService was not bound");
+        }
         if(map != null && gpsServiceBound) {
+            Log.d("CardioTracker", "Map was not null and we are bound to the gps service");
             map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             UiSettings options = map.getUiSettings();
             options.setCompassEnabled(true);
@@ -58,7 +75,11 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
             options.setZoomGesturesEnabled(true);
             options.setRotateGesturesEnabled(true);
             options.setScrollGesturesEnabled(false);
-            map.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(gpsService.getStartLocation(), 16, 0, 0)));
+            LatLng startLocation = gpsService.getStartLocation();
+            Log.d("CardioTracker", "Start Location: " + startLocation);
+            if(startLocation != null) {
+                map.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(startLocation, 16, 0, 0)));
+            }
         }
     }
 
@@ -85,19 +106,22 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
     private ServiceConnection gpsConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            Log.d("CardioTracker", "gps service connected");
             gpsService = ((GpsService.ServiceBinder)iBinder).getService();
             gpsService.setUpGps(TrackingScreen.this);
-            setUpMap();
 
             if(timerService != null) {
                 timerService.addListeners(gpsService);
             }
 
             gpsServiceBound = true;
+
+            setUpMap();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
+            Log.d("CardioTracker", "gpsService was disconnected");
             unbindService(this);
             gpsServiceBound = false;
         }

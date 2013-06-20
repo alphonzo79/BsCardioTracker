@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,6 +26,7 @@ public class TimerService extends Service {
     @Override
     public void onCreate() {
         timer = new Timer();
+        listeners = new ArrayList<TimerListener>();
     }
 
     @Override
@@ -36,6 +38,16 @@ public class TimerService extends Service {
 
     public void startTimer() {
         timer.schedule(new BbTimerTask(), 1000, 1000);
+    }
+
+    public void stopTimer() {
+        timer.cancel();
+        timer.purge();
+    }
+
+    public void pauseTimer() {
+        timer.cancel();
+        timer.purge();
     }
 
     public void addListeners(TimerListener listener) {
