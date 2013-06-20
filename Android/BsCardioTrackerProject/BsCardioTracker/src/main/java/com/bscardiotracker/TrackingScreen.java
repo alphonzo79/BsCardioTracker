@@ -3,10 +3,14 @@ package com.bscardiotracker;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -16,9 +20,19 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public class TrackingScreen extends FragmentActivity implements TimerService.TimerListener {
     private GoogleMap map;
+    private Polyline polyLine;
+    private PolylineOptions polyLineOptions;
+
+    private double distance;
+    private LatLng lastLatLng;
 
     TimerService timerService;
     boolean timerServiceBound;
@@ -26,7 +40,8 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
     GpsService gpsService;
     boolean gpsServiceBound;
 
-    
+    TextView timeDisplay, distanceDisplay, paceDisplay;
+    Button startStopButton, pauseRestartButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,6 +50,36 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
 
         this.bindService(new Intent(this, TimerService.class), timerConnection, BIND_AUTO_CREATE);
         this.bindService(new Intent(this, GpsService.class), gpsConnection, BIND_AUTO_CREATE);
+
+        distance = 0d;
+
+        timeDisplay = (TextView)findViewById(R.id.time_display);
+        distanceDisplay = (TextView)findViewById(R.id.distance_display);
+        paceDisplay = (TextView)findViewById(R.id.pace_display);
+
+        startStopButton = (Button)findViewById(R.id.start_stop_button);
+        startStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timerService.startTimer();
+                startStopButton.setText(R.string.stop);
+
+                startStopButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        timerService.stopTimer();
+
+                        //todo end the workout and go to the summary screen
+                    }
+                });
+
+                pauseRestartButton.setEnabled(true);
+            }
+        });
+
+        pauseRestartButton = (Button)findViewById(R.id.pause_button);
+        pauseRestartButton.setOnClickListener(pauseTimer);
+        pauseRestartButton.setEnabled(false);
     }
 
     @Override
@@ -83,6 +128,24 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
         }
     }
 
+    Button.OnClickListener pauseTimer = new Button.OnClickListener(){
+        @Override
+        public void onClick(View view) {
+            timerService.pauseTimer();
+            pauseRestartButton.setText(R.string.resume);
+            pauseRestartButton.setOnClickListener(resumeTimer);
+        }
+    };
+
+    Button.OnClickListener resumeTimer = new Button.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            timerService.startTimer();
+            pauseRestartButton.setText(R.string.pause);
+            pauseRestartButton.setOnClickListener(pauseTimer);
+        }
+    };
+
     private ServiceConnection timerConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -129,6 +192,76 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
 
     @Override
     public void updateTime(int numSeconds) {
+        updateTimeDisplay(numSeconds);
+        updateMap(numSeconds);
+    }
+
+    private void updateTimeDisplay(int numSeconds) {
+        int second = numSeconds % 60;
+        int minutes = numSeconds / 60;
+        timeDisplay.setText(String.format("%02d:%02d", minutes, second));
+    }
+
+    private void updateMap(int numSeconds) {
+        List<LatLng> newLocations = gpsService.getNewLocations();
+        if(newLocations != null && newLocations.size() > 0) {
+            LatLng newCenter = newLocations.get(newLocations.size() - 1);
+            if(newCenter != null) {
+                map.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(newCenter, 16, 0, 0)));
+            }
+
+            if(polyLine == null) {
+                polyLineOptions = new PolylineOptions().width(25).color(Color.BLUE).geodesic(false);
+                polyLine = map.addPolyline(polyLineOptions);
+            }
+
+            for(LatLng location : newLocations) {
+                polyLineOptions = polyLineOptions.add(location);
+            }
+
+            polyLine.setPoints(polyLineOptions.getPoints());
+
+            updateDistance(newLocations);
+            updatePace(numSeconds);
+        }
+    }
+
+    private void updateDistance(List<LatLng> newLocations) {
+        //http://en.wikipedia.org/wiki/Haversine_formula
+        //http://stackoverflow.com/questions/120283/working-with-latitude-longitude-values-in-java
+        for(LatLng location : newLocations) {
+            if(lastLatLng != null) {
+                double earthRadiusInMiles = 3958.75;
+                double latDiff = Math.toRadians(location.latitude - lastLatLng.latitude);
+                double lngDiff = Math.toRadians(location.longitude - lastLatLng.longitude);
+                double sinLatDiff = Math.sin(latDiff / 2);
+                double sinLngDiff = Math.sin(lngDiff / 2);
+                double a = Math.pow(sinLatDiff, 2)
+                        + Math.pow(sinLngDiff, 2)
+                        * Math.cos(Math.toRadians(lastLatLng.latitude))
+                        *  Math.cos(Math.toRadians(location.latitude));
+                double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                double dist = earthRadiusInMiles * c;
+
+                distance += dist;
+              }
+            lastLatLng = location;
+        }
+
+        BigDecimal bd = new BigDecimal(distance);
+        bd = bd.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        distanceDisplay.setText(bd.toPlainString());
+    }
+
+    private void updatePace(int numSeconds) {
+        //minutes per mile
+        Double paceInSeconds = numSeconds / distance;
+        int paceSecondsInt = paceInSeconds.intValue();
+
+        int seconds = paceSecondsInt % 60;
+        int minutes = paceSecondsInt / 60;
+
+        paceDisplay.setText(String.format("%02d:%02d", minutes, seconds));
         //todo
     }
 }

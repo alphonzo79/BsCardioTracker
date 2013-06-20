@@ -25,7 +25,6 @@ public class TimerService extends Service {
 
     @Override
     public void onCreate() {
-        timer = new Timer();
         listeners = new ArrayList<TimerListener>();
     }
 
@@ -37,6 +36,7 @@ public class TimerService extends Service {
     }
 
     public void startTimer() {
+        timer = new Timer();
         timer.schedule(new BbTimerTask(), 1000, 1000);
     }
 

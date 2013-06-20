@@ -20,6 +20,8 @@ public class GpsService extends Service implements TimerService.TimerListener {
     List<LatLng> newLocationsList;
     GpsUtility gpsUtility;
 
+    private final int UPDATE_INTERVAL = 5;
+
     @Override
     public IBinder onBind(Intent intent) {
         return serviceBinder;
@@ -62,7 +64,7 @@ public class GpsService extends Service implements TimerService.TimerListener {
 
     @Override
     public void updateTime(int numSeconds) {
-        if(numSeconds / 10 == 0) {
+        if(numSeconds / UPDATE_INTERVAL == 0) {
             LatLng location = gpsUtility.getLocation();
             if(location != null) {
                 fullLocationList.add(location);
