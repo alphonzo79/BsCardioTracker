@@ -64,7 +64,7 @@ public class GpsService extends Service implements TimerService.TimerListener {
 
     @Override
     public void updateTime(int numSeconds) {
-        if(numSeconds / UPDATE_INTERVAL == 0) {
+        if(numSeconds % UPDATE_INTERVAL == 0) {
             LatLng location = gpsUtility.getLocation();
             if(location != null) {
                 fullLocationList.add(location);

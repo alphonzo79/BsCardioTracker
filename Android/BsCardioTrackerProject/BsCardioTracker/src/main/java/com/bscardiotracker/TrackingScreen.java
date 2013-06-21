@@ -31,6 +31,7 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
     private Polyline polyLine;
     private PolylineOptions polyLineOptions;
 
+    private final int DISTANCE_UPDATE_INTERVAL = 10;
     private double distance;
     private LatLng lastLatLng;
 
@@ -69,7 +70,7 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
                     public void onClick(View view) {
                         timerService.stopTimer();
 
-                        //todo end the workout and go to the summary screen
+                        //todo end the workout, get the last gps checkpoint and go to the summary screen
                     }
                 });
 
@@ -91,8 +92,9 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
 
     @Override
     public void onDestroy() {
-        gpsService.unbindService(gpsConnection);
-        timerService.unbindService(timerConnection);
+        super.onDestroy();
+        unbindService(gpsConnection);
+        unbindService(timerConnection);
     }
 
     private void setUpMap() {
@@ -119,7 +121,7 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
             options.setZoomControlsEnabled(false);
             options.setZoomGesturesEnabled(true);
             options.setRotateGesturesEnabled(true);
-            options.setScrollGesturesEnabled(false);
+            options.setScrollGesturesEnabled(true);
             LatLng startLocation = gpsService.getStartLocation();
             Log.d("CardioTracker", "Start Location: " + startLocation);
             if(startLocation != null) {
@@ -161,7 +163,7 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            unbindService(this);
+            unbindService(timerConnection);
             timerServiceBound = false;
         }
     };
@@ -185,7 +187,7 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             Log.d("CardioTracker", "gpsService was disconnected");
-            unbindService(this);
+            unbindService(gpsConnection);
             gpsServiceBound = false;
         }
     };
@@ -207,11 +209,12 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
         if(newLocations != null && newLocations.size() > 0) {
             LatLng newCenter = newLocations.get(newLocations.size() - 1);
             if(newCenter != null) {
-                map.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(newCenter, 16, 0, 0)));
+                float zoom = map.getCameraPosition().zoom;
+                map.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(newCenter, zoom, 0, 0)));
             }
 
             if(polyLine == null) {
-                polyLineOptions = new PolylineOptions().width(25).color(Color.BLUE).geodesic(false);
+                polyLineOptions = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
                 polyLine = map.addPolyline(polyLineOptions);
             }
 
@@ -244,7 +247,7 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
                 double dist = earthRadiusInMiles * c;
 
                 distance += dist;
-              }
+            }
             lastLatLng = location;
         }
 
@@ -258,10 +261,13 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
         Double paceInSeconds = numSeconds / distance;
         int paceSecondsInt = paceInSeconds.intValue();
 
-        int seconds = paceSecondsInt % 60;
-        int minutes = paceSecondsInt / 60;
+        if(paceSecondsInt < 5999) { //99:59
+            int seconds = paceSecondsInt % 60;
+            int minutes = paceSecondsInt / 60;
 
-        paceDisplay.setText(String.format("%02d:%02d", minutes, seconds));
-        //todo
+            paceDisplay.setText(String.format("%02d:%02d", minutes, seconds));
+        } else {
+            paceDisplay.setText(R.string.clock_default);
+        }
     }
 }

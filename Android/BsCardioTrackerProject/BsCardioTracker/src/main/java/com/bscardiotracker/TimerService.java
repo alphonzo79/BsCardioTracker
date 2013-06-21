@@ -30,8 +30,10 @@ public class TimerService extends Service {
 
     @Override
     public void onDestroy() {
-        timer.cancel();
-        timer.purge();
+        if(timer != null) {
+            timer.cancel();
+            timer.purge();
+        }
         seconds = 0;
     }
 

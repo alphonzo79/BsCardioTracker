@@ -35,7 +35,7 @@
                    android:value="@string/maps_api_key"/>
 
         <activity
-            android:name="com.bscardiotracker.Dashboard"
+            android:name="com.bscardiotracker.LoginScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -45,12 +45,27 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.bscardiotracker.Dashboard"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"/>
+
         <activity android:name="com.bscardiotracker.TrackingScreen"
-                  android:label=""
+                  android:label="@string/app_name"
                   android:screenOrientation="portrait" />
 
         <service android:name="com.bscardiotracker.TimerService" />
         <service android:name="com.bscardiotracker.GpsService" />
+
+        <activity
+            android:name="com.bscardiotracker.HistoryScreen"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.bscardiotracker.SummaryScreen"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
