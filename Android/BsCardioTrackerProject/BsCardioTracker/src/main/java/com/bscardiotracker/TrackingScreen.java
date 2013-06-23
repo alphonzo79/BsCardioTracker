@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bscardiotracker.data.WorkoutDataEntity;
+import com.bscardiotracker.data.WorkoutHistoryDAO;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
@@ -24,6 +26,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.List;
 
 public class TrackingScreen extends FragmentActivity implements TimerService.TimerListener {
@@ -33,6 +36,7 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
 
     private final int DISTANCE_UPDATE_INTERVAL = 10;
     private double distance;
+    private int pace;
     private LatLng lastLatLng;
 
     TimerService timerService;
@@ -70,7 +74,20 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
                     public void onClick(View view) {
                         timerService.stopTimer();
 
-                        //todo end the workout, get the last gps checkpoint and go to the summary screen
+                        WorkoutDataEntity workout = new WorkoutDataEntity();
+                        workout.setWorkoutDate(Calendar.getInstance().getTimeInMillis());
+                        workout.setDuration(timerService.getSeconds());
+                        workout.setDistance(distance);
+                        workout.setPace(pace);
+                        workout.setLocations(gpsService.getAllLocations());
+
+                        WorkoutHistoryDAO db = new WorkoutHistoryDAO(TrackingScreen.this);
+                        db.recordNewWorkout(workout);
+
+                        Intent summaryScreen = new Intent(TrackingScreen.this, SummaryScreen.class);
+                        summaryScreen.putExtra("entity", workout);
+                        startActivity(summaryScreen);
+                        TrackingScreen.this.finish(); //Since this screen contains state that has just been finalized, we don't want to give the user the opportunity to alter it
                     }
                 });
 
@@ -259,11 +276,11 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
     private void updatePace(int numSeconds) {
         //minutes per mile
         Double paceInSeconds = numSeconds / distance;
-        int paceSecondsInt = paceInSeconds.intValue();
+        pace = paceInSeconds.intValue();
 
-        if(paceSecondsInt < 5999) { //99:59
-            int seconds = paceSecondsInt % 60;
-            int minutes = paceSecondsInt / 60;
+        if(pace < 5999) { //99:59
+            int seconds = pace % 60;
+            int minutes = pace / 60;
 
             paceDisplay.setText(String.format("%02d:%02d", minutes, seconds));
         } else {

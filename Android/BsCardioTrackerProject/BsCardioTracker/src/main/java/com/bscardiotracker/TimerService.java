@@ -64,6 +64,10 @@ public class TimerService extends Service {
         }
     }
 
+    public int getSeconds() {
+        return seconds;
+    }
+
     public class ServiceBinder extends Binder
     {
         public TimerService getService()
