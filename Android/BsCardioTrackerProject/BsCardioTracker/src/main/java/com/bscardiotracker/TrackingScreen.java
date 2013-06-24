@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -85,7 +86,7 @@ public class TrackingScreen extends FragmentActivity implements TimerService.Tim
                         db.recordNewWorkout(workout);
 
                         Intent summaryScreen = new Intent(TrackingScreen.this, SummaryScreen.class);
-                        summaryScreen.putExtra("entity", workout);
+                        summaryScreen.putExtra("entity", new Gson().toJson(workout));
                         startActivity(summaryScreen);
                         TrackingScreen.this.finish(); //Since this screen contains state that has just been finalized, we don't want to give the user the opportunity to alter it
                     }

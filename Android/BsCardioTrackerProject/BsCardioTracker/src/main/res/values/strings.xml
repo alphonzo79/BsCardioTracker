@@ -18,6 +18,7 @@
     <string name="distance_default">-.--</string>
     <string name="miles">miles</string>
     <string name="minutes_per_mile">min/mile</string>
+    <string name="done">Done</string>
 
     <string name="create_history_table">CREATE TABLE IF NOT EXISTS history (_id INTEGER PRIMARY KEY AUTOINCREMENT, date INTEGER, duration INTEGER, distance REAL, pace INTEGER, json TEXT);</string>
 

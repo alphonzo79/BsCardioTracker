@@ -7,11 +7,24 @@ import java.util.Date;
 import java.util.List;
 
 public class WorkoutDataEntity implements Serializable {
+    private static final long serialVersionUID = -400294700021163051L;
     Long workoutDate;
     Integer duration;
     Double distance;
     Integer pace; //Seconds per mile, displayed as minutes per mile
     List<LatLng> locations;
+
+    public WorkoutDataEntity() {
+
+    }
+
+    public WorkoutDataEntity(Long workoutDate, Integer duration, Double distance, Integer pace, List<LatLng> locations) {
+        this.workoutDate = workoutDate;
+        this.duration = duration;
+        this.distance = distance;
+        this.pace = pace;
+        this.locations = locations;
+    }
 
     public void setWorkoutDate(Long workoutDate) {
         this.workoutDate = workoutDate;
