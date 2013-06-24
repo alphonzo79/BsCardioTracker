@@ -1,4 +1,4 @@
-package com.bscardiotracker;
+package com.bscardiotracker.utilities;
 
 import android.content.Context;
 import android.location.Location;

@@ -4,6 +4,7 @@
     <string name="app_name">BsCardioTracker</string>
     <string name="action_settings">Settings</string>
     <string name="track_cardio_session">Track Cardio Session</string>
+    <string name="view_recent_cardio_sessions">View Recent Cardio Sessions</string>
     <string name="tracking_session">Tracking Cardion Session</string>
     <string name="temp">TEMP</string>
     <string name="time">Time</string>

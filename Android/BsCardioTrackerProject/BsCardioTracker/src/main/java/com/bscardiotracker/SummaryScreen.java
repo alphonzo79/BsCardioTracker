@@ -54,6 +54,7 @@ public class SummaryScreen extends FragmentActivity {
 
         setContentView(R.layout.summary_screen);
 
+        dateDisplay = (TextView)findViewById(R.id.date_display);
         timeDisplay = (TextView)findViewById(R.id.time_display);
         distanceDisplay = (TextView)findViewById(R.id.distance_display);
         paceDisplay = (TextView)findViewById(R.id.pace_display);
@@ -69,7 +70,7 @@ public class SummaryScreen extends FragmentActivity {
         buildMap();
 
         if(workout != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM dd, yyyy hh:mm a");
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy h:mm a");
             Date date = new Date(workout.getWorkoutDate());
             dateDisplay.setText(sdf.format(date));
 
@@ -126,7 +127,7 @@ public class SummaryScreen extends FragmentActivity {
                 map.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(mapBounds.northeast, 15, 0, 0)), new GoogleMap.CancelableCallback() {
                     @Override
                     public void onFinish() {
-                        map.animateCamera(CameraUpdateFactory.newLatLngBounds(mapBounds, 0));
+                        map.animateCamera(CameraUpdateFactory.newLatLngBounds(mapBounds, 25));
                     }
 
                     @Override

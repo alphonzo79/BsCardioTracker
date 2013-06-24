@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.bscardiotracker.data.WorkoutDataEntity;
 import com.bscardiotracker.data.WorkoutHistoryDAO;
+import com.bscardiotracker.services.GpsService;
+import com.bscardiotracker.services.TimerService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;

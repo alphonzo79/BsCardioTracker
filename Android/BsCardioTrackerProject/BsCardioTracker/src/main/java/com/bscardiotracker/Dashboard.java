@@ -11,6 +11,7 @@ import com.bscardiotracker.R;
 
 public class Dashboard extends Activity {
     Button trackButton;
+    Button historyButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,14 +25,14 @@ public class Dashboard extends Activity {
                 startActivity(launchTracker);
             }
         });
-    }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.dashboard, menu);
-        return true;
+        historyButton = (Button)findViewById(R.id.history_button);
+        historyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent historyTracker = new Intent(Dashboard.this, HistoryScreen.class);
+                startActivity(historyTracker);
+            }
+        });
     }
-    
 }

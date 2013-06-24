@@ -140,12 +140,27 @@
 
     </LinearLayout>
 
-    <fragment
-        android:id="@+id/map"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/labels_container"
-        android:layout_above="@id/buttons_container"
-        class="com.google.android.gms.maps.SupportMapFragment"/>
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/labels_container"
+            android:layout_above="@id/buttons_container"
+            android:background="@drawable/map_background"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+
+        <fragment
+                android:id="@+id/map"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="0.5dp"
+                android:layout_marginBottom="0.5dp"
+                android:layout_marginLeft="0.5dp"
+                android:layout_marginRight="0.5dp"
+                class="com.google.android.gms.maps.SupportMapFragment"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

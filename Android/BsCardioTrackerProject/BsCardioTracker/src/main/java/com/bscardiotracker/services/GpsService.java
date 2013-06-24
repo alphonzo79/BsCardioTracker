@@ -1,4 +1,4 @@
-package com.bscardiotracker;
+package com.bscardiotracker.services;
 
 import android.app.Service;
 import android.content.Context;
@@ -7,11 +7,11 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.bscardiotracker.utilities.GpsUtility;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 
 public class GpsService extends Service implements TimerService.TimerListener {
     private ServiceBinder serviceBinder = new ServiceBinder();

@@ -1,4 +1,4 @@
-package com.bscardiotracker;
+package com.bscardiotracker.services;
 
 import android.app.Service;
 import android.content.Intent;
