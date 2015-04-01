@@ -77,18 +77,20 @@ public class WorkoutHistoryDAO extends DatabaseHelper {
 
         Cursor rs = db.rawQuery(stmt, null);
         List<WorkoutDataEntity> result = null;
-        try {
-            rs.moveToFirst();
-            result = new ArrayList<WorkoutDataEntity>();
-            do {
-                String json = rs.getString(0);
-                result.add(new Gson().fromJson(json, WorkoutDataEntity.class));
-            } while(rs.moveToNext());
-        } catch(SQLiteException e) {
-            e.printStackTrace();
-        } finally {
-            rs.close();
-            db.close();
+        if(rs != null && rs.getCount() > 0) {
+            try {
+                rs.moveToFirst();
+                result = new ArrayList<WorkoutDataEntity>();
+                do {
+                    String json = rs.getString(0);
+                    result.add(new Gson().fromJson(json, WorkoutDataEntity.class));
+                } while (rs.moveToNext());
+            } catch (SQLiteException e) {
+                e.printStackTrace();
+            } finally {
+                rs.close();
+                db.close();
+            }
         }
 
         return result;

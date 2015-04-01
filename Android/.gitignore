@@ -1,0 +1,14 @@
+.gradle
+/local.properties
+/.idea/workspace.xml
+.DS_Store
+.idea/
+*.iml
+*.orig
+out/
+classes/
+gen/
+target/
+bin/
+build/
+map_key.xml

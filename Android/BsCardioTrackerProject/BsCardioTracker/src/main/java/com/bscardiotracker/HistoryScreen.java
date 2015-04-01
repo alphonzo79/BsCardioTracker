@@ -43,7 +43,7 @@ public class HistoryScreen extends Activity {
 
         @Override
         public int getCount() {
-            return data.size();
+            return data != null ? data.size() : 0;
         }
 
         @Override
